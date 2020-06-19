@@ -37,14 +37,8 @@ class Game
     incorrect_guesses.length == 7
   end
 
-  def guess_is_letter?
-    guess.length == 1
-  end
-
-  def decrease_remaining_letters
-    return unless guess_is_letter?
-
-    remaining_letters.gsub!(guess, '')
+  def found_matches?
+    remaining_letters.gsub! guess, ''
   end
 
   def play
@@ -54,7 +48,7 @@ class Game
       self.guess = gets.chomp.downcase
       break if word_cracked?
 
-      incorrect_guesses << guess unless decrease_remaining_letters
+      incorrect_guesses << guess unless found_matches?
       puts "Incorrect guesses #{incorrect_guesses}"
       puts "Remaining letters #{remaining_letters}"
     end
