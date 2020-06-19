@@ -21,7 +21,9 @@
            |
        ---------
 
-  _ _ n _ a n
+  _ _ n _ a n      <-- State of word
+
+  g  e  n  handing <-- Wrong guesses
 
 (/save) Save game
 ```
