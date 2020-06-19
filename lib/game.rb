@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
-require 'pry'
 # Game logic for hangman
 class Game
+  include Display
+
   attr_reader :secret_word, :incorrect_guesses
   attr_accessor :guess, :remaining_letters
 
