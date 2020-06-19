@@ -71,11 +71,21 @@
 
   - Assign it to the secret word.
 
-  - Ask the player for a guess until he figures it out or the hanging man is complete.
+  - Until the hanging man is complete
+
     - If the player chooses to save the game
       - Ask the player what he'd like to call his game.
       - Serialize the game into a JSON file with the given filename by the user
+
+    - Ask the player for a guess.
   
+    - If it's a word
+      - Check if the word is the secret word
+        - If it is
+          - End the game with a winning message
+        - If it's not
+          - Add the word to the table of incorrect guesses
+
     - If the guess is a single letter
       - Check if it exists in the remaining list of letters
         - If it is
@@ -84,12 +94,6 @@
         - If not
           - Add the letter to the incorrect guess table
 
-    - If it's a word
-      - Check if the word is the secret word
-        - If it is
-          - End the game with a winning message
-        - If it's not
-          - Add the word to the table of incorrect guesses
     - Update the display
       - Update the hangman drawing
       - Update the secret word display

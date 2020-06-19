@@ -15,25 +15,27 @@ Todo list pulled from the algorithm in the problem solving steps. Helps keep tra
 
   - [x] Assign it to the secret word.
 
-  - [ ] Ask the player for a guess until he figures it out or the hanging man is complete.
+  - [ ] Until the hanging man is complete
+
     - If the player chooses to save the game
       - [ ] Ask the player what he'd like to call his game.
       - [ ] Serialize the game into a JSON file with the given filename by the user
   
-    - [ ] If the guess is a single letter
-      - [ ] Check if it exists in the remaining list of letters
+    - [x] Ask the player for a guess
+    - [x] If it's a word
+      - [x] Check if the word is the secret word
         - If it is
-          - [ ] Remove from the remaining letters all the instances of the entered letter.
-          - [ ] Add them to the blank spaces in the word display
-        - If not
-          - [ ] Add the letter to the incorrect guess table
-
-    - [ ] If it's a word
-      - [ ] Check if the word is the secret word
-        - If it is
-          - [ ] End the game with a winning message
+          - [x] End the game with a winning message
         - If it's not
-          - [ ] Add the word to the table of incorrect guesses
+          - [x] Add the word to the table of incorrect guesses
+
+    - [ ] If the guess is a single letter
+      - [x] Check if it exists in the remaining list of letters
+        - If it is
+          - [x] Remove from the remaining letters all the instances of the entered letter.
+          - [x] Add them to the blank spaces in the word display
+        - If not
+          - [x] Add the letter to the incorrect guess table
     - [ ] Update the display
       - [ ] Update the hangman drawing
       - [ ] Update the secret word display
