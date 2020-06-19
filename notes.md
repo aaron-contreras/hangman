@@ -7,7 +7,8 @@
   - It will be a **console** interactive program.
   - It has a "Hanging man" that completes itself as the guesser makes a wrong guess.
     - I'm thinking that I can reuse the pegs from my Mastermind game to build a "bolder" gallow making it a bit more attractive. (This is subject to how it looks once I implement it, it could just look terrible)
-  ```
+
+```
      ______
     |      | 
     O      |
@@ -23,7 +24,7 @@
   _ _ n _ a n
 
 (/save) Save game
-  ```
+```
 
   - It has the word to be guessed with
     - Blank underscores for unguessed letters.
@@ -49,4 +50,5 @@
       - Serialize the game and save it into an external file in a "saved_games" directory.
   - If the word is guessed before the "hanged man" is completely filled in, then give the player a "congrats" message.
   - If not then give a "you lose" message
+
 4. How do I go from the listed inputs to the desired outputs?
