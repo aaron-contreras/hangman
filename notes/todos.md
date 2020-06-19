@@ -29,7 +29,7 @@ Todo list pulled from the algorithm in the problem solving steps. Helps keep tra
         - If it's not
           - [x] Add the word to the table of incorrect guesses
 
-    - [ ] If the guess is a single letter
+    - [x] If the guess is a single letter
       - [x] Check if it exists in the remaining list of letters
         - If it is
           - [x] Remove from the remaining letters all the instances of the entered letter.
