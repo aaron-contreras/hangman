@@ -1,4 +1,4 @@
 # frozen_string_literal: true
 
-require_relative './lib/game.rb'
+require_relative './game.rb'
 Game.new
