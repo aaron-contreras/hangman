@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require_relative './display.rb'
 # Game logic for hangman
 class Game
   include Display
@@ -8,6 +9,7 @@ class Game
   attr_accessor :guess, :remaining_letters
 
   def initialize
+    puts start_screen
     @secret_word = select_secret_word
     @remaining_letters = @secret_word.clone
     @incorrect_guesses = []
@@ -44,7 +46,6 @@ class Game
 
   def play
     puts secret_word
-
     until no_more_guesses?
       self.guess = gets.chomp.downcase
       break if word_cracked?
