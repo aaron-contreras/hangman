@@ -47,4 +47,10 @@ module Display
 
     secret_word.split('').join(' ')
   end
+
+  def clear_screen
+    # Opting for escape sequences opposed to system 'clear'
+    # There is a slight noticeable "erasing" with the latter
+    print "\e[2J\e[H"
+  end
 end
