@@ -2,6 +2,16 @@
 
 # Includes all functionality for outputting to the console
 module Display
+  HANGMAN_BODY_PARTS = {
+    head: [0, 'O'],
+    neck: [1, '|'],
+    left_arm: [2, "\u2572"],
+    right_arm: [3, "\u2571"],
+    torso: [4, '|'],
+    left_leg: [5, "\u2571"],
+    right_leg: [6, "\u2572"]
+  }.freeze
+
   def start_screen
     <<~HEREDOC
       #{'H A N G M A N'.center 80}
@@ -37,6 +47,26 @@ module Display
     <<~HEREDOC
       Which game would you like to continue?
       #{show_filenames files}
+    HEREDOC
+  end
+
+  def find_drawable_parts(incorrect_guesses)
+    HANGMAN_BODY_PARTS.each_with_object({}) do |(body_part, content), hash|
+      minimum_mistakes = content[0]
+      symbol = content[1]
+
+      hash[body_part] = incorrect_guesses > minimum_mistakes ? symbol : ' '
+    end
+  end
+
+  def hangman_drawing(incorrect_guesses)
+    drawable_parts = find_drawable_parts incorrect_guesses
+
+    <<~HEREDOC
+       #{drawable_parts[:head]}
+      #{drawable_parts[:left_arm]}#{drawable_parts[:neck]}#{drawable_parts[:right_arm]}
+       #{drawable_parts[:torso]}
+      #{drawable_parts[:left_leg]} #{drawable_parts[:right_leg]}
     HEREDOC
   end
 
