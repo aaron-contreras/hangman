@@ -20,4 +20,31 @@ module Display
         (L)oad game
     HEREDOC
   end
+
+  def show_filenames(files)
+    files.map.with_index do |file, index|
+      "  (#{index + 1}) #{File.basename(file, '.*').capitalize}"
+    end.join("\n")
+  end
+
+  def no_saved_games_message
+    "You haven't saved any games. Press (b) to go back to the start screen"
+  end
+
+  def load_a_game_screen(files)
+    return no_saved_games_message if files.empty?
+
+    <<~HEREDOC
+      Which game would you like to continue?
+      #{show_filenames files}
+    HEREDOC
+  end
+
+  def secret_word_display(secret_word, remaining_letters)
+    remaining_letters.split('').each do |remaining_letter|
+      secret_word = secret_word.gsub remaining_letter, '_'
+    end
+
+    secret_word.split('').join(' ')
+  end
 end
