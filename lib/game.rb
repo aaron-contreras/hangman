@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'pry'
 require_relative './display.rb'
 # Game logic for hangman
 class Game
@@ -10,7 +11,7 @@ class Game
 
   def initialize
     puts start_screen
-    @secret_word = select_secret_word
+    @secret_word = 'desirability' # select_secret_word
     @remaining_letters = @secret_word.clone
     @incorrect_guesses = []
     @guess = nil
@@ -33,24 +34,30 @@ class Game
   end
 
   def word_cracked?
-    remaining_letters.length.zero? || guess == secret_word
+    binding.pry
+    remaining_letters == guess || secret_word == guess
   end
 
   def no_more_guesses?
     incorrect_guesses.length == 7
   end
 
-  def found_matches?
-    remaining_letters.gsub! guess, ''
+  def no_matches?
+    previous_remaining_letters = remaining_letters
+    self.remaining_letters = remaining_letters.gsub guess, ''
+    remaining_letters == previous_remaining_letters
   end
 
   def play
     puts secret_word
     until no_more_guesses?
+      clear_screen
+      puts hangman_drawing incorrect_guesses.length
+      puts secret_word_display secret_word, remaining_letters
       self.guess = gets.chomp.downcase
       break if word_cracked?
 
-      incorrect_guesses << guess unless found_matches?
+      incorrect_guesses << guess if no_matches?
       puts "Incorrect guesses #{incorrect_guesses}"
       puts "Remaining letters #{remaining_letters}"
     end
@@ -60,5 +67,6 @@ class Game
     else
       puts "You lost!"
     end
+    puts "The word was #{secret_word}"
   end
 end
