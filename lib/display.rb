@@ -24,28 +24,43 @@ module Display
   BOTTOM_BAR_INDENT = ' ' * BOTTOM_BAR_OFFSET
   POLE_INDENT = ' ' * TOP_BAR_WIDTH
   SQUARE = "\e[47m  \e[0m"
+  BULLET = "\u26aa"
   TOP_BAR = SQUARE * (TOP_BAR_WIDTH / SQUARE_WIDTH + 1)
   ROPE = '|'
   POLE = SQUARE
   BOTTOM_BAR = SQUARE * 5
 
-  def start_screen
+  def title
     <<~HEREDOC
-      #{'H A N G M A N'.center 80}
       #{'-------------'.center 80}
-      # All possible words are pulled from a dictionary.
-      # Words will be between 5 - 12 characters long.
-      # You will be able to guess a letter on each move or the entire word if you know what it is.
-      # The objective is to figure out the word before the stickman is completely hung. (7 turns)
+      #{'|H A N G M A N|'.center 80}
+      #{'-------------'.center 80}
+    HEREDOC
+  end
+
+  def start_screen
+    clear_screen
+    <<~HEREDOC
+
+
+      The objective is to save Steve from getting hung up on accusations of witchery. You get 7 turns.
+
+      #{BULLET} All words are pulled from a dictionary and will be 5 - 12 characters long.
+      #{BULLET} You'll be able to guess a letter or the entire word if you already figure it out.
 
 
 
 
 
-      # Would you like to start a new game or load a previously saved game and continue from where you left off?
+      #{BULLET} Would you like to start a new game or load a previously saved game and continue from where you left off?
         (N)ew game
         (L)oad game
     HEREDOC
+  end
+
+  def save_game_screen
+    clear_screen
+    'Give this game a name so you can retrieve it later => '
   end
 
   def show_filenames(files)
@@ -55,7 +70,11 @@ module Display
   end
 
   def no_saved_games_message
-    "You haven't saved any games. Press (b) to go back to the start screen"
+    "Woops! You haven't saved any games. Press (b) to go back to the start screen"
+  end
+
+  def succesful_save
+    'Your game has been succesfully saved.'
   end
 
   def load_a_game_screen(files)
@@ -87,9 +106,9 @@ module Display
     HEREDOC
   end
 
-
   def hanging_man_drawing(incorrect_guesses)
     <<~HEREDOC
+
       #{SCREEN_INDENT}#{TOP_BAR}#{SQUARE}#{SQUARE}
       #{SCREEN_INDENT} #{ROPE}#{' ' * (ROPE_TO_POLE_INDENT + 3)}#{POLE}
       #{SCREEN_INDENT} #{ROPE}#{' ' * (ROPE_TO_POLE_INDENT + 2)}#{POLE}
@@ -97,46 +116,45 @@ module Display
       #{SCREEN_INDENT} #{ROPE}#{' ' * ROPE_TO_POLE_INDENT}#{POLE}
       #{stick_figure incorrect_guesses}
       #{SCREEN_INDENT}#{POLE_INDENT}#{POLE}
-      #{SCREEN_INDENT}#{POLE_INDENT}#{POLE}
       #{SCREEN_INDENT}#{BOTTOM_BAR_INDENT}#{BOTTOM_BAR}
     HEREDOC
   end
 
-  def secret_word_display(secret_word, remaining_letters)
+  def hide_secret_word(secret_word, remaining_letters)
     remaining_letters.split('').each do |remaining_letter|
       secret_word = secret_word.gsub remaining_letter, '_'
     end
 
     mystery_word = secret_word.split('').join(' ')
-    centered_spacing = SCREEN_WIDTH / 2 - mystery_word.length / 2
     <<~HEREDOC
 
-
-      #{' ' * centered_spacing}#{secret_word.split('').join(' ')}
-
+      #{mystery_word.center(80)}
 
     HEREDOC
   end
 
-  def display_incorrect_guesses(incorrect_guesses)
-    puts incorrect_guesses.join('  |  ').center(80)
+  def incorrect_guess_list(incorrect_guesses)
+    "#{incorrect_guesses.join('  |  ').center(80)}\n\n"
   end
 
-  def next_move_message
-    '"/save" to save this game. Go ahead and make a guess: '
+  def guess_prompt
+    "\"/save\" to save your progress, \"/exit\" to quit.\nMake a guess => "
   end
 
   def clear_screen
     # Opting for escape sequences opposed to system 'clear'
     # There is a slight noticeable "erasing" with the latter
-    print "\e[2J\e[4;0H"
+    print "\e[2J\e[3;0H"
+    puts title
   end
 
-  def game_over_message(game_won)
+  def game_over_message(game_won, secret_word)
     if game_won
-      puts 'Good job!'
+      puts 'You saved him! Hangman is forever thankful!'
     else
-      puts 'You lost!'
+      puts "Hangman was counting on you to save him... The word was \"#{secret_word}\""
     end
+
+    print 'Would you like to (1) play again or (2) quit? => '
   end
 end
