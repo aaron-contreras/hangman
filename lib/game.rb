@@ -11,24 +11,26 @@ class Game
   attr_reader :secret_word, :incorrect_guesses
   attr_accessor :guess, :remaining_letters
 
-  GAME_MODES = %w[n l].freeze
+  START_SCREEN_OPTIONS = %w[n l].freeze
   IN_GAME_OPTIONS = %w[/exit /save].freeze
+  END_OF_GAME_OPTIONS = [1, 2].freeze
 
   def initialize
-    puts start_screen
     @secret_word = select_secret_word
     @remaining_letters = @secret_word.clone
     @incorrect_guesses = []
     @guess = nil
-    start
   end
 
   def start
+    puts start_screen
+
     check_for_saved_games_directory
-    mode = gets.chomp.downcase until GAME_MODES.include? mode
+    option = gets.chomp.downcase until START_SCREEN_OPTIONS.include? option
+
     clear_screen
 
-    if mode == 'n'
+    if option == 'n'
       play
     else
       puts load_a_game_screen saved_games
@@ -87,7 +89,7 @@ class Game
     return if selected_option == '/exit'
 
     if selected_option == '/back'
-      Game.new
+      Game.new.start
     elsif game? selected_option
       game_key = selected_option.to_i
       deserialize File.read(game_list[game_key])
@@ -106,10 +108,17 @@ class Game
     sleep(1)
   end
 
+  def valid_guess
+    guess = loop do
+      guess = gets.chomp.strip.downcase
+      break guess unless incorrect_guesses.include? guess
+    end
+  end
+
   def run_game_loop
     until game_is_over?
       update_display
-      self.guess = gets.chomp.strip.downcase
+      self.guess = valid_guess
 
       if IN_GAME_OPTIONS.include? guess
         break if guess == '/exit'
@@ -128,7 +137,7 @@ class Game
     update_display
     game_over_message word_cracked?, secret_word
 
-    end_of_game_choice = gets.chomp.to_i until [1, 2].include? end_of_game_choice
-    Game.new if end_of_game_choice == 1
+    option = gets.chomp.to_i until END_OF_GAME_OPTIONS.include? option
+    Game.new.start if option == 1
   end
 end
