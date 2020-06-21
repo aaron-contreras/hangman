@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
+require_relative './styleable.rb'
 # Includes all functionality for outputting to the console
-module Display
+module Displayable
+  include Styleable
+
   HANGMAN_BODY_PARTS = {
     head: [0, 'O'],
     neck: [1, '|'],
