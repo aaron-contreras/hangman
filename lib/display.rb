@@ -12,6 +12,8 @@ module Display
     right_leg: [6, "\u2572"]
   }.freeze
 
+  CHARACTER_NAME = 'Steve'
+
   # Use an even numbered offset for the top bar
   SCREEN_WIDTH = 80
   LEFT_OFFSET = 25
@@ -23,6 +25,9 @@ module Display
   SCREEN_INDENT = ' ' * LEFT_OFFSET
   BOTTOM_BAR_INDENT = ' ' * BOTTOM_BAR_OFFSET
   POLE_INDENT = ' ' * TOP_BAR_WIDTH
+  HEAD_AND_TORSO_INDENT = ' ' * (TOP_BAR_WIDTH - 2)
+  EXTREMITIES_INDENT = ' ' * (TOP_BAR_WIDTH - 3)
+
   SQUARE = "\e[47m  \e[0m"
   BULLET = "\u26aa"
   TOP_BAR = SQUARE * (TOP_BAR_WIDTH / SQUARE_WIDTH + 1)
@@ -43,18 +48,16 @@ module Display
     <<~HEREDOC
 
 
-      The objective is to save Steve from getting hung up on accusations of witchery. You get 7 turns.
+      The objective is to save #{CHARACTER_NAME} from getting hung up on accusations of witchery. You get 7 turns.
 
       #{BULLET} All words are pulled from a dictionary and will be 5 - 12 characters long.
+
       #{BULLET} You'll be able to guess a letter or the entire word if you already figure it out.
 
 
-
-
-
-      #{BULLET} Would you like to start a new game or load a previously saved game and continue from where you left off?
-        (N)ew game
-        (L)oad game
+      Would you like to play a...
+        (N) New game
+        (S) Saved game
     HEREDOC
   end
 
@@ -99,10 +102,10 @@ module Display
     drawable_parts = find_drawable_parts incorrect_guesses
 
     <<~HEREDOC.chomp
-      #{SCREEN_INDENT} #{drawable_parts[:head]}#{' ' * (TOP_BAR_WIDTH - 2)}#{SQUARE}
-      #{SCREEN_INDENT}#{drawable_parts[:left_arm]}#{drawable_parts[:neck]}#{drawable_parts[:right_arm]}#{' ' * (TOP_BAR_WIDTH - 3)}#{SQUARE}
-      #{SCREEN_INDENT} #{drawable_parts[:torso]}#{' ' * (TOP_BAR_WIDTH - 2)}#{SQUARE}
-      #{SCREEN_INDENT}#{drawable_parts[:left_leg]} #{drawable_parts[:right_leg]}#{' ' * (TOP_BAR_WIDTH - 3)}#{SQUARE}
+      #{SCREEN_INDENT} #{drawable_parts[:head]}#{HEAD_AND_TORSO_INDENT}#{SQUARE}
+      #{SCREEN_INDENT}#{drawable_parts[:left_arm]}#{drawable_parts[:neck]}#{drawable_parts[:right_arm]}#{EXTREMITIES_INDENT}#{SQUARE}
+      #{SCREEN_INDENT} #{drawable_parts[:torso]}#{HEAD_AND_TORSO_INDENT}#{SQUARE}
+      #{SCREEN_INDENT}#{drawable_parts[:left_leg]} #{drawable_parts[:right_leg]}#{EXTREMITIES_INDENT}#{SQUARE}
     HEREDOC
   end
 
