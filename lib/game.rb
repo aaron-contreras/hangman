@@ -34,8 +34,7 @@ class Game
   end
 
   def word_cracked?
-    binding.pry
-    remaining_letters == guess || secret_word == guess
+    remaining_letters.length.zero? || secret_word == guess
   end
 
   def no_more_guesses?
@@ -48,25 +47,23 @@ class Game
     remaining_letters == previous_remaining_letters
   end
 
+  def update_display
+    clear_screen
+    puts gallow incorrect_guesses.length
+    puts secret_word_display secret_word, remaining_letters
+    puts "Incorrect guesses #{incorrect_guesses}"
+    puts "Remaining letters #{remaining_letters}"
+  end
+
   def play
-    puts secret_word
-    until no_more_guesses?
-      clear_screen
-      puts hangman_drawing incorrect_guesses.length
-      puts secret_word_display secret_word, remaining_letters
+    update_display
+    until no_more_guesses? || word_cracked?
       self.guess = gets.chomp.downcase
-      break if word_cracked?
-
       incorrect_guesses << guess if no_matches?
-      puts "Incorrect guesses #{incorrect_guesses}"
-      puts "Remaining letters #{remaining_letters}"
+      update_display
     end
 
-    if word_cracked?
-      puts "Good job!"
-    else
-      puts "You lost!"
-    end
+    puts game_over_message word_cracked?
     puts "The word was #{secret_word}"
   end
 end
