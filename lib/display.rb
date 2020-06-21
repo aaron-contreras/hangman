@@ -12,6 +12,23 @@ module Display
     right_leg: [6, "\u2572"]
   }.freeze
 
+  # Use an even numbered offset for the top bar
+  SCREEN_WIDTH = 80
+  LEFT_OFFSET = 25
+  TOP_BAR_WIDTH = 22
+  SQUARE_WIDTH = 2
+  BOTTOM_BAR_OFFSET = TOP_BAR_WIDTH - 2 * SQUARE_WIDTH
+  ROPE_TO_POLE_INDENT = TOP_BAR_WIDTH - 1
+
+  SCREEN_INDENT = ' ' * LEFT_OFFSET
+  BOTTOM_BAR_INDENT = ' ' * BOTTOM_BAR_OFFSET
+  POLE_INDENT = ' ' * TOP_BAR_WIDTH
+  SQUARE = "\e[47m  \e[0m"
+  TOP_BAR = SQUARE * (TOP_BAR_WIDTH / SQUARE_WIDTH + 1)
+  ROPE = '|'
+  POLE = SQUARE
+  BOTTOM_BAR = SQUARE * 5
+
   def start_screen
     <<~HEREDOC
       #{'H A N G M A N'.center 80}
@@ -59,14 +76,29 @@ module Display
     end
   end
 
-  def hangman_drawing(incorrect_guesses)
+  def stick_figure(incorrect_guesses)
     drawable_parts = find_drawable_parts incorrect_guesses
 
+    <<~HEREDOC.chomp
+      #{SCREEN_INDENT} #{drawable_parts[:head]}#{' ' * (TOP_BAR_WIDTH - 2)}#{SQUARE}
+      #{SCREEN_INDENT}#{drawable_parts[:left_arm]}#{drawable_parts[:neck]}#{drawable_parts[:right_arm]}#{' ' * (TOP_BAR_WIDTH - 3)}#{SQUARE}
+      #{SCREEN_INDENT} #{drawable_parts[:torso]}#{' ' * (TOP_BAR_WIDTH - 2)}#{SQUARE}
+      #{SCREEN_INDENT}#{drawable_parts[:left_leg]} #{drawable_parts[:right_leg]}#{' ' * (TOP_BAR_WIDTH - 3)}#{SQUARE}
+    HEREDOC
+  end
+
+
+  def hanging_man_drawing(incorrect_guesses)
     <<~HEREDOC
-       #{drawable_parts[:head]}
-      #{drawable_parts[:left_arm]}#{drawable_parts[:neck]}#{drawable_parts[:right_arm]}
-       #{drawable_parts[:torso]}
-      #{drawable_parts[:left_leg]} #{drawable_parts[:right_leg]}
+      #{SCREEN_INDENT}#{TOP_BAR}#{SQUARE}#{SQUARE}
+      #{SCREEN_INDENT} #{ROPE}#{' ' * (ROPE_TO_POLE_INDENT + 3)}#{POLE}
+      #{SCREEN_INDENT} #{ROPE}#{' ' * (ROPE_TO_POLE_INDENT + 2)}#{POLE}
+      #{SCREEN_INDENT} #{ROPE}#{' ' * (ROPE_TO_POLE_INDENT + 1)}#{POLE}
+      #{SCREEN_INDENT} #{ROPE}#{' ' * ROPE_TO_POLE_INDENT}#{POLE}
+      #{stick_figure incorrect_guesses}
+      #{SCREEN_INDENT}#{POLE_INDENT}#{POLE}
+      #{SCREEN_INDENT}#{POLE_INDENT}#{POLE}
+      #{SCREEN_INDENT}#{BOTTOM_BAR_INDENT}#{BOTTOM_BAR}
     HEREDOC
   end
 
@@ -75,12 +107,36 @@ module Display
       secret_word = secret_word.gsub remaining_letter, '_'
     end
 
-    secret_word.split('').join(' ')
+    mystery_word = secret_word.split('').join(' ')
+    centered_spacing = SCREEN_WIDTH / 2 - mystery_word.length / 2
+    <<~HEREDOC
+
+
+      #{' ' * centered_spacing}#{secret_word.split('').join(' ')}
+
+
+    HEREDOC
+  end
+
+  def display_incorrect_guesses(incorrect_guesses)
+    puts incorrect_guesses.join('  |  ').center(80)
+  end
+
+  def next_move_message
+    '"/save" to save this game. Go ahead and make a guess: '
   end
 
   def clear_screen
     # Opting for escape sequences opposed to system 'clear'
     # There is a slight noticeable "erasing" with the latter
-    print "\e[2J\e[H"
+    print "\e[2J\e[4;0H"
+  end
+
+  def game_over_message(game_won)
+    if game_won
+      puts 'Good job!'
+    else
+      puts 'You lost!'
+    end
   end
 end
