@@ -1,19 +1,17 @@
 # frozen_string_literal: true
 
-require 'pry'
 require_relative './display.rb'
 require_relative './serializable.rb'
+require_relative './game_options.rb'
+
 # Game logic for hangman
 class Game
   include Display
   include Serializable
+  include GameOptions
 
   attr_reader :secret_word, :incorrect_guesses
   attr_accessor :guess, :remaining_letters
-
-  START_SCREEN_OPTIONS = %w[n l].freeze
-  IN_GAME_OPTIONS = %w[/exit /save].freeze
-  END_OF_GAME_OPTIONS = [1, 2].freeze
 
   def initialize
     @secret_word = select_secret_word
@@ -40,13 +38,9 @@ class Game
 
   private
 
-  def dictionary
-    File.readlines('5desk.txt').map(&:strip)
-  end
-
   def select_secret_word
-    word_bank = dictionary.filter { |word| word.length.between? 5, 12 }
-    word_bank.sample.downcase
+    dictionary = File.readlines('5desk.txt').map(&:strip)
+    dictionary.filter { |word| word.length.between? 5, 12 }.sample.downcase
   end
 
   def word_cracked?
@@ -88,13 +82,11 @@ class Game
   def proceed_with(selected_option)
     return if selected_option == '/exit'
 
-    if selected_option == '/back'
-      Game.new.start
-    elsif game? selected_option
-      game_key = selected_option.to_i
-      deserialize File.read(game_list[game_key])
-      play
-    end
+    return Game.new.start if selected_option == '/back'
+
+    game_key = selected_option.to_i
+    deserialize File.read(game_list[game_key])
+    play
   end
 
   def update_incorrect_guesses(guess)
@@ -133,6 +125,7 @@ class Game
 
   def play
     run_game_loop
+    return if guess == '/exit' 
 
     update_display
     game_over_message word_cracked?, secret_word
