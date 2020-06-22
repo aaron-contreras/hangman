@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require_relative './display.rb'
+require_relative './displayable.rb'
 require_relative './serializable.rb'
 require_relative './game_options.rb'
 
 # Game logic for hangman
 class Game
-  include Display
+  include Displayable
   include Serializable
   include GameOptions
 
@@ -103,7 +103,7 @@ class Game
   def valid_guess
     guess = loop do
       guess = gets.chomp.strip.downcase
-      break guess unless incorrect_guesses.include? guess
+      break guess unless incorrect_guesses.include?(guess) || guess.empty?
     end
   end
 
@@ -125,7 +125,7 @@ class Game
 
   def play
     run_game_loop
-    return if guess == '/exit' 
+    return if guess == '/exit'
 
     update_display
     game_over_message word_cracked?, secret_word
