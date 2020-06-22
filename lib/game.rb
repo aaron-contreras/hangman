@@ -23,7 +23,6 @@ class Game
   def start
     puts start_screen
 
-    check_for_saved_games_directory
     option = gets.chomp.downcase until START_SCREEN_OPTIONS.include? option
 
     clear_screen
@@ -47,12 +46,8 @@ class Game
     remaining_letters.length.zero? || secret_word == guess
   end
 
-  def no_more_guesses?
-    incorrect_guesses.length == 7
-  end
-
   def game_is_over?
-    no_more_guesses? || word_cracked?
+    incorrect_guesses.length == 7 || word_cracked?
   end
 
   def no_matches?
@@ -68,14 +63,10 @@ class Game
     remaining_letters == previous_remaining_letters
   end
 
-  def word_status
-    "#{hide_secret_word secret_word, remaining_letters}#{incorrect_guess_list incorrect_guesses}"
-  end
-
   def update_display
     clear_screen
     puts hanging_man_drawing incorrect_guesses.length
-    puts word_status
+    puts word_status secret_word, remaining_letters, incorrect_guesses
     print guess_prompt unless game_is_over?
   end
 
@@ -100,10 +91,19 @@ class Game
     sleep(1)
   end
 
+  def correct_guesses
+    secret_word.split('') - remaining_letters.split('')
+  end
+
+  def already_guessed?(guess)
+    correct_guesses.include?(guess) || incorrect_guesses.include?(guess)
+  end
+
   def valid_guess
     guess = loop do
       guess = gets.chomp.strip.downcase
-      break guess unless incorrect_guesses.include?(guess) || guess.empty?
+
+      break guess unless already_guessed?(guess) || guess.empty?
     end
   end
 

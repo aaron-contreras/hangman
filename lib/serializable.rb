@@ -29,6 +29,7 @@ module Serializable
   end
 
   def saved_games
+    check_for_saved_games_directory
     Dir.glob "#{SAVED_GAMES_DIRECTORY}/*.json"
   end
 

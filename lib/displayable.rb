@@ -43,7 +43,7 @@ module Displayable
   end
 
   def no_saved_games_message
-    "Woops! You haven't saved any games. Type #{stylize "/back", BOLD} to go the start screen"
+    "Woops! You haven't saved any games. Type #{stylize '/back', BOLD} to go the start screen"
   end
 
   def succesful_save
@@ -110,6 +110,10 @@ module Displayable
     "#{colorize incorrect_guesses.join('  |  ').center(80), COLORS[:bg][:red]}\n\n"
   end
 
+  def word_status(secret_word, remaining_letters, incorrect_guesses)
+    "#{hide_secret_word secret_word, remaining_letters}#{incorrect_guess_list incorrect_guesses}"
+  end
+
   def guess_prompt
     "\"#{stylize '/save', BOLD}\" to save your progress, \"#{stylize '/exit', BOLD}\" to quit.\nMake a guess => "
   end
@@ -121,7 +125,7 @@ module Displayable
     puts title
   end
 
-  WIN_MESSAGE = "You saved #{CHARACTER_NAME}! Hangman is forever thankful!"
+  WIN_MESSAGE = "You saved him! #{CHARACTER_NAME} is forever thankful!"
   LOSE_MESSAGE = "#{CHARACTER_NAME} was counting on you to save him..."
 
   def game_over_message(game_won, secret_word)
