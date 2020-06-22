@@ -5,43 +5,10 @@ require_relative './styleable.rb'
 module Displayable
   include Styleable
 
-  HANGMAN_BODY_PARTS = {
-    head: [0, 'O'],
-    neck: [1, '|'],
-    left_arm: [2, "\u2572"],
-    right_arm: [3, "\u2571"],
-    torso: [4, '|'],
-    left_leg: [5, "\u2571"],
-    right_leg: [6, "\u2572"]
-  }.freeze
-
-  CHARACTER_NAME = 'Steve'
-
-  # Use an even numbered offset for the top bar
-  SCREEN_WIDTH = 80
-  LEFT_OFFSET = 25
-  TOP_BAR_WIDTH = 22
-  SQUARE_WIDTH = 2
-  BOTTOM_BAR_OFFSET = TOP_BAR_WIDTH - 2 * SQUARE_WIDTH
-  ROPE_TO_POLE_INDENT = TOP_BAR_WIDTH - 1
-
-  SCREEN_INDENT = ' ' * LEFT_OFFSET
-  BOTTOM_BAR_INDENT = ' ' * BOTTOM_BAR_OFFSET
-  POLE_INDENT = ' ' * TOP_BAR_WIDTH
-  HEAD_AND_TORSO_INDENT = ' ' * (TOP_BAR_WIDTH - 2)
-  EXTREMITIES_INDENT = ' ' * (TOP_BAR_WIDTH - 3)
-
-  SQUARE = "\e[47m  \e[0m"
-  BULLET = "\u26aa"
-  TOP_BAR = SQUARE * (TOP_BAR_WIDTH / SQUARE_WIDTH + 1)
-  ROPE = '|'
-  POLE = SQUARE
-  BOTTOM_BAR = SQUARE * 5
-
   def title
     <<~HEREDOC
       #{'-------------'.center 80}
-      #{'|H A N G M A N|'.center 80}
+      #{stylize '|H A N G M A N|'.center(80), BOLD}
       #{'-------------'.center 80}
     HEREDOC
   end
@@ -134,17 +101,17 @@ module Displayable
     mystery_word = secret_word.split('').join(' ')
     <<~HEREDOC
 
-      #{mystery_word.center(80)}
+      #{stylize mystery_word.center(80), BOLD}
 
     HEREDOC
   end
 
   def incorrect_guess_list(incorrect_guesses)
-    "#{incorrect_guesses.join('  |  ').center(80)}\n\n"
+    "#{colorize incorrect_guesses.join('  |  ').center(80), COLORS[:bg][:red]}\n\n"
   end
 
   def guess_prompt
-    "\"/save\" to save your progress, \"/exit\" to quit.\nMake a guess => "
+    "\"#{stylize '/save', BOLD}\" to save your progress, \"#{stylize '/exit', BOLD}\" to quit.\nMake a guess => "
   end
 
   def clear_screen
@@ -154,11 +121,14 @@ module Displayable
     puts title
   end
 
+  WIN_MESSAGE = "You saved #{CHARACTER_NAME}! Hangman is forever thankful!"
+  LOSE_MESSAGE = "#{CHARACTER_NAME} was counting on you to save him..."
+
   def game_over_message(game_won, secret_word)
     if game_won
-      puts 'You saved him! Hangman is forever thankful!'
+      puts colorize WIN_MESSAGE, COLORS[:fg][:green]
     else
-      puts "Hangman was counting on you to save him... The word was \"#{secret_word}\""
+      puts "#{colorize LOSE_MESSAGE, COLORS[:fg][:red]} The word was \"#{colorize secret_word, COLORS[:fg][:green]}\""
     end
 
     print 'Would you like to (1) play again or (2) quit? => '
