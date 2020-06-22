@@ -40,7 +40,7 @@ class Game
 
   def select_secret_word
     dictionary = File.readlines('5desk.txt').map(&:strip)
-    dictionary.filter { |word| word.length.between? 5, 12 }.sample.downcase
+    dictionary.select { |word| word.length.between? 5, 12 }.sample.downcase
   end
 
   def word_cracked?

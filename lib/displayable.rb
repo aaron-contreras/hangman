@@ -43,7 +43,7 @@ module Displayable
   end
 
   def no_saved_games_message
-    "Woops! You haven't saved any games. Press (b) to go back to the start screen"
+    "Woops! You haven't saved any games. Type #{stylize "/back", BOLD} to go the start screen"
   end
 
   def succesful_save
