@@ -11,7 +11,7 @@ module Styleable
       blue: 34,
       magenta: 35,
       cyan: 36,
-      white: 37,
+      white: 37
     },
     bg: {
       black: 40,
@@ -21,11 +21,11 @@ module Styleable
       blue: 44,
       magenta: 45,
       cyan: 46,
-      white: 47,
+      white: 47
     }
   }.freeze
 
-  BOLD = 1  
+  BOLD = 1
 
   def colorize(string, color)
     "\e[#{color}m#{string}\e[0m"

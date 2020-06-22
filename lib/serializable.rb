@@ -9,7 +9,7 @@ module Serializable
   SAVED_GAMES_DIRECTORY = './saved_games'
 
   def serialize
-    to_serialize = instance_variables.reduce({}) do |object, variable|
+    to_serialize = instance_variables.each_with_object({}) do |variable, object|
       object[variable] = instance_variable_get variable
       object
     end
@@ -33,7 +33,7 @@ module Serializable
   end
 
   def game_list
-    saved_games.each_with_index.reduce({}) do |hash, (file, index)|
+    saved_games.each_with_index.each_with_object({}) do |(file, index), hash|
       hash[index + 1] = file
       hash
     end
