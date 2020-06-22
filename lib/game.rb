@@ -52,6 +52,7 @@ class Game
 
   def no_matches?
     previous_remaining_letters = remaining_letters
+
     self.remaining_letters = if word_cracked?
                                ' '
                              elsif guess.length == 1
@@ -80,7 +81,7 @@ class Game
     play
   end
 
-  def update_incorrect_guesses(guess)
+  def update_incorrect_guesses
     incorrect_guesses << guess if no_matches?
   end
 
@@ -119,7 +120,7 @@ class Game
         next
       end
 
-      update_incorrect_guesses guess
+      update_incorrect_guesses
     end
   end
 
