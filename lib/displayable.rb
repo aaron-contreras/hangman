@@ -7,9 +7,9 @@ module Displayable
 
   def title
     <<~HEREDOC
-      #{'-------------'.center 80}
-      #{stylize '|H A N G M A N|'.center(80), BOLD}
-      #{'-------------'.center 80}
+      #{'------------------'.center 80}
+      #{stylize '|  H A N G M A N  |'.center(80), BOLD}
+      #{'------------------'.center 80}
     HEREDOC
   end
 
