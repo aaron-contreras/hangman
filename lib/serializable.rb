@@ -62,6 +62,7 @@ module Serializable
   end
 
   def save_game_to_file
+    check_for_saved_games_directory
     filename = filename_to_save
     File.open("./saved_games/#{filename}", 'w') { |file| file.puts serialize }
   end
